@@ -1,6 +1,7 @@
 # Reto Grupo Promass
 
 ![img](./img/portada.png) <!-- alt = img -thumbnail -->
+![img](./img/portada3.png)
 ![img](./img/portada2.png)
 Este proyecto consta de dos partes: el backend y el frontend, que se encargan de proporcionar una solución de software. A continuación, se detallan los pasos para utilizar cada uno de ellos.
 
