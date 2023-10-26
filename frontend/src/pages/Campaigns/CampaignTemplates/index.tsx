@@ -9,7 +9,7 @@ import { EmptyTemplates } from "./EmptyTemplates";
 import { TemplatesModal } from "./TemplatesModal";
 import { columns } from "./columns";
 import { IconWithTooltip } from "@/components/IconWithTooltip";
-import { Delete, Edit, Visibility } from "@mui/icons-material";
+import { Search, Edit, Visibility, Delete } from "@mui/icons-material";
 import { truncate } from "@/utils/truncate";
 import {
   showNotification,
@@ -36,13 +36,23 @@ export const Templates = () => {
     canDelete: true,
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   // hooks
   const { templates } = useTemplatesStore();
   const { currentUser } = useUsersStore();
 
   // const
   const rows = useMemo(() => {
-    return templates.map((template, index) => {
+    const filteredTemplates = templates.filter((template) => {
+      return (
+        template.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        template.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        template.author.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+  
+    return filteredTemplates.map((template, index) => {
       return {
         ...template,
         publicationDate: new Date(template.publicationDate!).toDateString(),
@@ -55,7 +65,7 @@ export const Templates = () => {
             className="text-sm"
           />
         ),
-        actions: (
+         actions: (
           <>
             <IconWithTooltip
               tooltip="Ver"
@@ -89,7 +99,8 @@ export const Templates = () => {
         ),
       };
     });
-  }, [templates, setOpenConfirmation, permissions]);
+  }, [templates, searchTerm]);
+  
 
   // functions
   const handleDeleteTemplate = async () => {
@@ -151,6 +162,7 @@ export const Templates = () => {
         />
       ) : (
         <>
+          
           {permissions?.canCreate && (
             <Button
               variant="outlined"
@@ -164,7 +176,26 @@ export const Templates = () => {
               Agregar nuevo
             </Button>
           )}
-
+          <div className="flex gap-x-2 w-[45%] mb-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-[90%] p-2 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-400"
+              />
+              <div className="absolute inset-y-0 left-2 flex items-center">
+                <Search className="text-gray-400" />
+              </div>
+            </div>
+            <button
+              onClick={() => setSearchTerm("")}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            >
+              Limpiar
+            </button>
+          </div>
           <CustomTable rows={rows} columns={columns} showToolbar={false} />
         </>
       )}

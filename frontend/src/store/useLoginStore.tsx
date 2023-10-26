@@ -12,7 +12,7 @@ export const useLoginStore = create(
       token: "",
     }),
     {
-      name: "bot-angel-user", // name of the item in the storage (must be unique)
+      name: "blog-user", // name of the item in the storage (must be unique)
       storage: createJSONStorage(() => localStorage),
     }
   )
