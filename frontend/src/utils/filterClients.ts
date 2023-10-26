@@ -1,0 +1,11 @@
+export const filterClients = (users: User[]) => {
+  return users
+    .map((user) => {
+      return {
+        name: user.name,
+        _id: user._id,
+        type: user.type,
+      };
+    })
+    .filter((user) => user.type === "customer");
+};
