@@ -1,12 +1,10 @@
 import { CustomDialog } from "@/components/CustomDialog";
 import { CustomTable } from "@/components/CustomTable";
 import { Loading } from "@/components/Loading";
-import { templateDelete, templatesGet } from "@/services/template.service";
-import { setTemplates, useTemplatesStore } from "@/store/useTemplatesStore";
 import { Box, Button } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EmptyTemplates } from "./EmptyTemplates";
-import { TemplatesModal } from "./TemplatesModal";
+import { EmptyPosts } from "./EmptyPosts";
+import { PostsModal } from "./PostsModal";
 import { columns } from "./columns";
 import { IconWithTooltip } from "@/components/IconWithTooltip";
 import { Search, Edit, Visibility, Delete } from "@mui/icons-material";
@@ -15,21 +13,22 @@ import {
   showNotification,
   showNotificationError,
 } from "@/utils/showNotification";
-import { TemplatePreviewModal } from "./TemplatesPreviewModal";
+import { PostPreviewModal } from "./PostsPreviewModal";
 import { useUsersStore } from "@/store/useUsersStore";
 import { postDelete, postGetAll } from "@/services/post.service";
+import { setPosts, usePostsStore } from "@/store/usePostSore";
 
 
-export const Templates = () => {
+export const Posts = () => {
   // states
   const [loading, setLoading] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<Template>(
-    {} as Template
+  const [selectedPost, setSelectedPost] = useState<IPost>(
+    {} as IPost
   );
-  const [hasTemplates, setHasTemplates] = useState(true);
+  const [hasPosts, setHasPosts] = useState(true);
   const [permissions, setPermissions] = useState({
     canCreate: true,
     canEdit: true,
@@ -39,28 +38,28 @@ export const Templates = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // hooks
-  const { templates } = useTemplatesStore();
+  const { posts } = usePostsStore();
   const { currentUser } = useUsersStore();
 
   // const
   const rows = useMemo(() => {
-    const filteredTemplates = templates.filter((template) => {
+    const filteredPosts = posts.filter((post) => {
       return (
-        template.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        template.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        template.author.toLowerCase().includes(searchTerm.toLowerCase())
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.author.toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
   
-    return filteredTemplates.map((template, index) => {
+    return filteredPosts.map((post, index) => {
       return {
-        ...template,
-        publicationDate: new Date(template.publicationDate!).toDateString(),
-        id: `${template.id}_${index}`,
+        ...post,
+        publicationDate: new Date(post.publicationDate!).toDateString(),
+        id: `${post.id}_${index}`,
         content: (
           <div
             dangerouslySetInnerHTML={{
-              __html: truncate(template.content, 70),
+              __html: truncate(post.content, 70),
             }}
             className="text-sm"
           />
@@ -71,7 +70,7 @@ export const Templates = () => {
               tooltip="Ver"
               icon={<Visibility className="icon" />}
               onClick={() => {
-                setSelectedTemplate(template);
+                setSelectedPost(post);
                 setOpenPreviewModal(true);
               }}
             />
@@ -80,7 +79,7 @@ export const Templates = () => {
                 tooltip="Editar"
                 icon={<Edit className="icon" />}
                 onClick={() => {
-                  setSelectedTemplate(template);
+                  setSelectedPost(post);
                   setOpenModal(true);
                 }}
               />
@@ -90,7 +89,7 @@ export const Templates = () => {
                 tooltip="Borrar"
                 icon={<Delete className="icon" />}
                 onClick={() => {
-                  setSelectedTemplate(template);
+                  setSelectedPost(post);
                   setOpenConfirmation(true);
                 }}
               />
@@ -99,40 +98,40 @@ export const Templates = () => {
         ),
       };
     });
-  }, [templates, searchTerm]);
+  }, [posts, searchTerm]);
   
 
   // functions
-  const handleDeleteTemplate = async () => {
+  const handleDeletePost = async () => {
     try {
-      await postDelete(selectedTemplate.id);
+      await postDelete(selectedPost.id);
 
-      const filteredTemplates = templates.filter(
-        (template) => template.id !== selectedTemplate.id
+      const filteredPosts = posts.filter(
+        (post) => post.id !== selectedPost.id
       );
 
-      setSelectedTemplate({} as Template);
+      setSelectedPost({} as IPost);
 
       showNotification("¡Eliminado correctamente!", "success");
 
-      setTemplates(filteredTemplates);
+      setPosts(filteredPosts);
     } catch (err) {
-      console.log("Delete template", err);
+      console.log("Delete post", err);
 
       showNotificationError();
     }
   };
 
-  const getTemplates = useCallback(async () => {
+  const getPosts = useCallback(async () => {
     try {
       setLoading(true);
-      const templatesResult = await postGetAll();
+      const postsResult = await postGetAll();
 
-      setTemplates(templatesResult);
+      setPosts(postsResult);
 
-      setHasTemplates(templatesResult.length > 0);
+      setHasPosts(postsResult.length > 0);
     } catch (err) {
-      console.log("Get templates", err);
+      console.log("Get posts", err);
     } finally {
       setLoading(false);
     }
@@ -140,10 +139,10 @@ export const Templates = () => {
 
   // useEffect
   useEffect(() => {
-    if (templates.length === 0 && hasTemplates) {
-      getTemplates();
+    if (posts.length === 0 && hasPosts) {
+      getPosts();
     }
-  }, [getTemplates, hasTemplates, templates]);
+  }, [getPosts, hasPosts, posts]);
 
   return loading ? (
     <Loading />
@@ -156,7 +155,7 @@ export const Templates = () => {
       }}
     >
       {rows.length === 0 ? (
-        <EmptyTemplates
+        <EmptyPosts
           onClick={() => setOpenModal(true)}
           canCreate={permissions.canCreate}
         />
@@ -189,12 +188,12 @@ export const Templates = () => {
                 <Search className="text-gray-400" />
               </div>
             </div>
-            <button
+            {/*<button
               onClick={() => setSearchTerm("")}
               className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
             >
               Limpiar
-            </button>
+            </button>*/}
           </div>
           <CustomTable rows={rows} columns={columns} showToolbar={false} />
         </>
@@ -202,31 +201,31 @@ export const Templates = () => {
       <CustomDialog
         open={openConfirmation}
         title="Aviso"
-        description={`¿Estás seguro que quieres borrar ${selectedTemplate?.title}? Esto no se puede deshacer.`}
+        description={`¿Estás seguro que quieres borrar ${selectedPost?.title}? Esto no se puede deshacer.`}
         onClose={() => setOpenConfirmation(false)}
         onCancel={() => setOpenConfirmation(false)}
-        onConfirm={handleDeleteTemplate}
+        onConfirm={handleDeletePost}
       />
-      {selectedTemplate && (
-        <TemplatesModal
-          key={selectedTemplate?.id}
+      {selectedPost && (
+        <PostsModal
+          key={selectedPost?.id}
           open={openModal}
           onClose={() => {
-            setSelectedTemplate({} as Template);
+            setSelectedPost({} as IPost);
             setOpenModal(false);
           }}
-          isEdit={!!selectedTemplate?.title}
-          template={selectedTemplate}
+          isEdit={!!selectedPost?.title}
+          post={selectedPost}
         />
       )}
-      <TemplatePreviewModal
-        key={`preview_${selectedTemplate?.id}`}
+      <PostPreviewModal
+        key={`preview_${selectedPost?.id}`}
         open={openPreviewModal}
         onClose={() => {
           setOpenPreviewModal(false);
-          setSelectedTemplate({} as Template);
+          setSelectedPost({} as IPost);
         }}
-        template={selectedTemplate}
+        post={selectedPost}
       />
     </Box>
   );

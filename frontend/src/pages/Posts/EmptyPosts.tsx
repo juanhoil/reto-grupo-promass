@@ -1,7 +1,7 @@
 import { EmptyResult } from "@/components/EmptyResult";
 import { Button } from "@mui/material";
 
-export const EmptyTemplates = ({
+export const EmptyPosts = ({
   onClick,
   canCreate,
 }: {

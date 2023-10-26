@@ -3,11 +3,11 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Layout } from "./layouts/Layout";
 import { LoginLayout } from "./layouts/LoginLayout";
 import { NotFound } from "./pages/404";
-import { Templates } from "./pages/Campaigns/CampaignTemplates";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { ResetPassword } from "./pages/ResetPassword";
 import { logout, useLoginStore } from "./store/useLoginStore";
+import { Posts } from "./pages/Posts";
 
 function App() {
   const { token } = useLoginStore();
@@ -27,7 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index path="/" element={<Home />} />
-          <Route path="/post" element={<Templates />} />
+          <Route path="/post" element={<Posts />} />
         </Route>
         <Route path="/" element={<LoginLayout />}>
           <Route path="/login" element={<Login />} />

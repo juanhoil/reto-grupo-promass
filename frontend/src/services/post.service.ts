@@ -1,13 +1,12 @@
-import { IPost } from "../types/post.type";
 import { httpClient } from "./httpClient";
 
 const path = "post";
 
-export const postCreate = async (post: Partial<Template>) => {
+export const postCreate = async (post: Partial<IPost>) => {
   return await httpClient.post(`${path}`, post).then((res) => res.data.data);
 };
 
-export const postUpdate = async (id: number, template: Partial<Template>) => {
+export const postUpdate = async (id: number, template: Partial<IPost>) => {
   return await httpClient.put(`${path}/${id}`, template).then((res) => res.data.data);
 };
 

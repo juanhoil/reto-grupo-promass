@@ -1,32 +1,32 @@
 import { CustomDateTimePicker } from "@/components/CustomDateTimePicker";
 import { CustomInput } from "@/components/CustomInput";
 import { CustomModal } from "@/components/CustomModal";
-import { CustomTextarea } from "@/pages/Campaigns/CampaignTemplates/CustomTextarea";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { CustomTextarea } from "../CustomTextarea";
 
-interface TemplatePreviewModal extends IModal {
-  template: Template;
+interface PostPreviewModal extends IModal {
+  post: IPost;
 }
 
-export const TemplatePreviewModal: React.FC<TemplatePreviewModal> = ({
+export const PostPreviewModal: React.FC<PostPreviewModal> = ({
   open,
   onClose,
-  template,
+  post,
 }) => {
-  const { control } = useForm<Template>({
+  const { control } = useForm<IPost>({
     mode: "onSubmit",
     defaultValues: {
-      title: template.title,
-      content: template.content,
-      author: template.author,
-      publicationDate: dayjs(template.publicationDate)
+      title: post.title,
+      content: post.content,
+      author: post.author,
+      publicationDate: dayjs(post.publicationDate)
     },
   });
 
   return (
     <CustomModal
-      name="template-modal"
+      name="detail-post-modal"
       title="Detalle"
       open={open}
       onClose={onClose}

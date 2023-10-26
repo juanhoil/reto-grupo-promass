@@ -1,6 +1,6 @@
 import { CustomInput } from "@/components/CustomInput";
 import { CustomModal } from "@/components/CustomModal";
-import { CustomTextarea } from "@/pages/Campaigns/CampaignTemplates/CustomTextarea";
+
 import {
   showNotification,
   showNotificationError,
@@ -8,24 +8,25 @@ import {
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import dayjs from 'dayjs';
-import { setTemplates, useTemplatesStore } from "@/store/useTemplatesStore";
 import { useUsersStore } from "@/store/useUsersStore";
 import { postCreate, postUpdate } from "@/services/post.service";
 import { CustomDateTimePicker } from "@/components/CustomDateTimePicker";
+import { CustomTextarea } from "../CustomTextarea";
+import { setPosts, usePostsStore } from "@/store/usePostSore";
 
-interface TemplatesModalProps extends IModal {
+interface PostsModalProps extends IModal {
   isEdit: boolean;
-  template: Template | undefined;
+  post: IPost | undefined;
 }
 
-export const TemplatesModal: React.FC<TemplatesModalProps> = ({
+export const PostsModal: React.FC<PostsModalProps> = ({
   open,
   onClose,
   isEdit,
-  template,
+  post,
 }) => {
 
-  const { templates } = useTemplatesStore();
+  const { posts } = usePostsStore();
   const { currentUser } = useUsersStore();
 
   const {
@@ -35,19 +36,19 @@ export const TemplatesModal: React.FC<TemplatesModalProps> = ({
     setValue,
     reset,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm<Template>({
+  } = useForm<IPost>({
     mode: "onSubmit",
     defaultValues: {
-      title: isEdit ? template?.title : "",
-      content: isEdit ? template?.content : "",
-      author: isEdit ? template?.author : "",
-      publicationDate: isEdit? dayjs(template?.publicationDate) : ""
+      title: isEdit ? post?.title : "",
+      content: isEdit ? post?.content : "",
+      author: isEdit ? post?.author : "",
+      publicationDate: isEdit? dayjs(post?.publicationDate) : ""
     },
   });
 
-  const onSubmit = async (data: Partial<Template>) => {
+  const onSubmit = async (data: Partial<IPost>) => {
     try {
-      const templateData: Partial<Template> = {
+      const postData: Partial<IPost> = {
         title: data.title!,
         content: data.content!,
         author: data.author!,
@@ -60,49 +61,49 @@ export const TemplatesModal: React.FC<TemplatesModalProps> = ({
       }
 
       if (!isEdit) {
-        let newTemplate = {} as Template;
-        newTemplate = await postCreate(templateData);
-        setTemplates([...templates, newTemplate]);
+        let newPost = {} as IPost;
+        newPost = await postCreate(postData);
+        setPosts([...posts, newPost]);
 
       } else {
-        const selectedTemplate = template as Template;
+        const selectedPost = post as IPost;
 
-        const result = await postUpdate(selectedTemplate.id, templateData);
+        const result = await postUpdate(selectedPost.id, postData);
 
         console.log("result", result);
 
-        const editedTemplate: Template = {
-          ...selectedTemplate,
+        const editedPost: IPost = {
+          ...selectedPost,
           title: data.title!,
           content: data.content!,
           author: data.author!,
           publicationDate: new Date(data.publicationDate!).toDateString()
         };
 
-        const filteredTemplates: Template[] = templates.filter(
-          (item) => item.id !== selectedTemplate.id
+        const filteredPosts: IPost[] = posts.filter(
+          (item) => item.id !== selectedPost.id
         );
 
-        console.log('editedTemplate',editedTemplate)
-        const newTemplates = [...filteredTemplates, editedTemplate];
+        console.log('editedPost',editedPost)
+        const newPosts = [...filteredPosts, editedPost];
 
-        newTemplates.sort(
+        newPosts.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
 
-        setTemplates(newTemplates);
+        setPosts(newPosts);
       }
 
       const message = isEdit
-        ? `${template?.title} editado!`
+        ? `${post?.title} editado!`
         : "Agregado";
 
       showNotification(message, "success");
 
       onClose();
     } catch (err) {
-      console.log("Templates Modal", err);
+      console.log("Posts Modal", err);
 
       showNotificationError();
     }
@@ -110,7 +111,7 @@ export const TemplatesModal: React.FC<TemplatesModalProps> = ({
 
   return (
     <CustomModal
-      name={isEdit ? "edit-template-modal" : "add-template-modal"}
+      name={isEdit ? "edit-post-modal" : "add-post-modal"}
       title={isEdit ? "Editar" : "Agregar"}
       open={open}
       onClose={() => {
