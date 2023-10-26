@@ -212,8 +212,8 @@ export const Templates = () => {
           key={selectedTemplate?.id}
           open={openModal}
           onClose={() => {
-            setOpenModal(false);
             setSelectedTemplate({} as Template);
+            setOpenModal(false);
           }}
           isEdit={!!selectedTemplate?.title}
           template={selectedTemplate}

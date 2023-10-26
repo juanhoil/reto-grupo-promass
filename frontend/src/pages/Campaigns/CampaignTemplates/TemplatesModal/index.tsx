@@ -54,6 +54,11 @@ export const TemplatesModal: React.FC<TemplatesModalProps> = ({
         publicationDate: data.publicationDate!
       };
 
+      if (!data.title || !data.content || !data.author || !data.publicationDate) {
+        showNotification("Todos los campos son requeridos.", "warning");
+        return;
+      }
+
       if (!isEdit) {
         let newTemplate = {} as Template;
         newTemplate = await postCreate(templateData);

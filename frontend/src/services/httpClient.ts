@@ -34,7 +34,6 @@ httpClient.interceptors.response.use(
 
 httpClient.interceptors.request.use(
   (config) => {
-    console.log('err______',token)
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
