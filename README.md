@@ -1,20 +1,25 @@
-# reto-grupo-promass
+# Reto Grupo Promass
 
 ![img](./img/portada.png) <!-- alt = img -thumbnail -->
 
+Este proyecto consta de dos partes: el backend y el frontend, que se encargan de proporcionar una solución de software. A continuación, se detallan los pasos para utilizar cada uno de ellos.
+
+
 - [backend](#backend)
 - [frontend](#frontend)
-- [How to deploy](#how-to-deploy)
+- [Cómo implementar](#cómo-implementar)
   - [Docker](#docker)
 
 
-### backend
-## How to use
+## Backend
 
-1. crea el archivo `.env` tomando de ejemplo `.env.example`,
-2. conecta tu base de datos en postgres
-3. usa node.js >= 18.15.0
-4. Ejecuta el comando
+### Cómo usar
+
+
+1. Crea el archivo `.env` siguiendo el ejemplo de `.env.example`.
+2. Conecta tu base de datos en PostgreSQL.
+3. Asegúrate de tener Node.js instalado (versión >= 18.15.0).
+4. Ejecuta los siguientes comandos:
 ```bash
 
 # install dependencies
@@ -29,20 +34,23 @@ yarn install
 # Start the bot service
 yarn dev
 ```
-5. abre http://localhost:3001/api-docs/#/
-6. registra tu usuario ejecutando el swagger http://localhost:3001/api-docs/#/Auth/post_auth_register
+5. abre http://localhost:3001/api-docs/#/ en tu navegador.
+6. Registra un usuario utilizando Swagger: http://localhost:3001/api-docs/#/Auth/post_auth_register
+```bash
 {
   "email": "usuario@example.com",
   "password": "password123"
 }
+```
+
 
 
 ### frontend
-## How to use
+### Cómo usar
 
-1. conectate al backend por default en el puerto 3001
-2. usa node.js >= 18.15.0
-3. Ejecuta el comando
+1. Conéctate al backend que se ejecuta de forma predeterminada en el puerto 3001.
+2. Asegúrate de tener Node.js instalado (versión >= 18.15.0).
+3. Ejecuta los siguientes comandos:
 ```bash
 
 # install dependencies
@@ -57,11 +65,9 @@ yarn install
 # Start the bot service
 yarn dev
 ```
-4. haz login con tu usuario registrado 
-"email": "usuario@example.com",
-"password": "password123"
+4. Inicia sesión con el usuario que registraste previamente:
 
-## How to deploy
+## Cómo implementar
 
 ### Docker
 
