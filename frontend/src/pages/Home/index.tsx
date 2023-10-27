@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { set } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
@@ -6,8 +7,9 @@ export const Home = () => {
 
   useEffect(() => {
 //    navigate("/post");
-    window.location.href = "/post";
-
+    setTimeout(()=>{
+      window.location.href = "/post";
+    },2000)
   }, [navigate]);
 
   return <></>;
