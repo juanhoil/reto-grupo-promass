@@ -5,7 +5,9 @@ export const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/post");
+//    navigate("/post");
+    window.location.href = "/post";
+
   }, [navigate]);
 
   return <></>;

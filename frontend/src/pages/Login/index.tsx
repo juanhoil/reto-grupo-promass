@@ -35,7 +35,7 @@ export const Login = () => {
 
       login(user.id, user.token);
 
-      navigate("/post");
+      navigate("/");
     } catch (err) {
       console.log("Login", err);
 
