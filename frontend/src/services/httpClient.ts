@@ -1,13 +1,12 @@
 import axios from "axios";
 
-export const APIBOTANGEL = "http://localhost:3001";
-//export const APIBOTANGEL = "https://apibotangel.31rooms.com";
+export const APIBLOG = "http://localhost:3001";
 
 const botAngelUser: any = localStorage.getItem("blog-user");
 const token = JSON.parse(botAngelUser)?.state.token;
 
 export const httpClient = axios.create({
-  baseURL: APIBOTANGEL,
+  baseURL: APIBLOG,
   headers: {
     "Content-Type": "application/json;charset=UTF-8",
     "X-Requested-With": "XMLHttpRequest",
