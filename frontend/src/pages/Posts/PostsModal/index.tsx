@@ -70,8 +70,6 @@ export const PostsModal: React.FC<PostsModalProps> = ({
 
         const result = await postUpdate(selectedPost.id, postData);
 
-        console.log("result", result);
-
         const editedPost: IPost = {
           ...selectedPost,
           title: data.title!,

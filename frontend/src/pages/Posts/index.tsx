@@ -125,6 +125,7 @@ export const Posts = () => {
   const getPosts = useCallback(async () => {
     try {
       setLoading(true);
+      console.log('get post')
       const postsResult = await postGetAll();
 
       setPosts(postsResult);
